@@ -15,17 +15,16 @@
   <xs:attribute name="Top" type="xs:string"/>
   <xs:attribute name="Left" type="xs:string"/>
   <xs:attribute name="Group" type="xs:string"/>
-  <xs:attribute name="Value" type="xs:string"/>
   <xs:attribute name="ColorDepth" type="BitsPerPixel"/>
   <xs:attribute name="ShowValue" type="xs:string"/>
+  <xs:attribute name="StrideMultiple" type="Multiple"/>
+  <xs:attribute name="WidthMultiple" type="Multiple"/>
 
   <xs:attributeGroup name="Element">
     <xs:attribute ref="Name"/>
     <xs:attribute ref="Top" />
     <xs:attribute ref="Left" />
     <xs:attribute ref="Location" />
-    <xs:attribute ref="Value" />
-    <xs:attribute ref="ShowValue"/>
   </xs:attributeGroup>
 
   <xs:attributeGroup name="AreaGroup">
@@ -48,6 +47,16 @@
       <xs:enumeration value="Color8bpp" />
       <xs:enumeration value="Color16bpp" />
       <xs:enumeration value="Color24bpp" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Multiple">
+    <xs:restriction base="xs:integer">
+      <xs:enumeration value="1" />
+      <xs:enumeration value="2" />
+      <xs:enumeration value="4" />
+      <xs:enumeration value="8" />
+      <xs:enumeration value="16" />
     </xs:restriction>
   </xs:simpleType>
 
@@ -109,7 +118,6 @@
       <xs:element ref="Font" minOccurs="0" maxOccurs="unbounded" />
       <xs:element ref="Color" minOccurs="0" maxOccurs="unbounded" />
       <xs:element ref="Ref" minOccurs="0" maxOccurs="unbounded" />
-      <xs:element ref="HotSpot" minOccurs="0" maxOccurs="unbounded" />
     </xs:choice>
   </xs:complexType>
 
@@ -123,6 +131,8 @@
         <xs:element ref="Font" minOccurs="0" maxOccurs="unbounded" />
         <xs:element ref="Color" minOccurs="0" maxOccurs="unbounded" />
       </xs:choice>
+      <xs:attribute ref="StrideMultiple"/>
+      <xs:attribute ref="WidthMultiple"/>
     </xs:complexType>
   </xs:element>
 
@@ -139,16 +149,24 @@
   <xs:complexType name="Canvas_t">
     <xs:complexContent>
       <xs:extension base="TopContent_t">
+        <xs:sequence>
+          <xs:element ref="Item" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
         <xs:attribute ref="Name" use="required"/>
         <xs:attribute ref="Height" use="required"/>
-        <xs:attribute ref="Width" use="required"/>
+        <xs:attribute ref="Width"/>
+        <xs:attribute ref="StrideMultiple"/>
+        <xs:attribute ref="WidthMultiple"/>
         <xs:attribute ref="Fill" use="required"/>
         <xs:attribute ref="ColorDepth" use="required"/>
         <xs:attribute name="Type" type="xs:string"/>
+        <xs:attribute name="ItemWidth" type="xs:string"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:element name="Item" type="Content_t" />
+  
   <xs:element name="Canvas" type="Canvas_t" />
 
   <xs:complexType name="Content_t">
@@ -179,6 +197,7 @@
   <xs:complexType name="Ellipse_t">
     <xs:complexContent>
       <xs:extension base="Content_t">
+        <xs:attributeGroup ref="AreaGroup" />
         <xs:attribute ref="Height" use="required" />
         <xs:attribute ref="Width" use="required" />
         <xs:attribute ref="StrokeThickness" />
@@ -227,6 +246,7 @@
   <xs:element name="Image">
     <xs:complexType>
       <xs:attributeGroup ref="Element" />
+      <xs:attributeGroup ref="AreaGroup" />
       <xs:attribute name="Source" type="xs:string" use="required" />
       <xs:attribute ref="Height" />
       <xs:attribute ref="Width" />
@@ -236,9 +256,6 @@
   <xs:complexType name="Set_t">
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute ref="Name"/>
-        <xs:attribute ref="Value" />
-        <xs:attribute ref="RefName" />
         <xs:attribute ref="ShowValue"/>
       </xs:extension>
     </xs:simpleContent>
@@ -294,15 +311,6 @@
   
   <xs:element name="Default" type="Content_t" />
   
-  <xs:element name="HotSpot">
-    <xs:complexType>
-      <xs:attributeGroup ref="Element" />
-      <xs:attributeGroup ref="AreaGroup" />
-      <xs:attribute ref="Height" />
-      <xs:attribute ref="Width" />
-    </xs:complexType>
-  </xs:element>
-  
   <xs:element name="Ref">
     <xs:complexType>
       <xs:choice minOccurs="1" maxOccurs="unbounded">
@@ -310,7 +318,7 @@
         <xs:element ref="SetString" minOccurs="0" maxOccurs="unbounded" />
       </xs:choice>
       <xs:attributeGroup ref="Element" />
-      <xs:attribute ref="RefName" />
+      <xs:attribute ref="RefName" use="required"/>
     </xs:complexType>
   </xs:element>
   
