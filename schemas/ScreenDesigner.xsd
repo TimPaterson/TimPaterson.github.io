@@ -124,6 +124,7 @@
   <xs:element name="Project">
     <xs:complexType>
       <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="Header" maxOccurs="1"/>
         <xs:element ref="Canvas" maxOccurs="unbounded" />
         <xs:element ref="Component" minOccurs="0" maxOccurs="unbounded" />
         <xs:element ref="Set" minOccurs="0" maxOccurs="unbounded" />
@@ -154,11 +155,12 @@
         </xs:sequence>
         <xs:attribute ref="Name" use="required"/>
         <xs:attribute ref="Height" use="required"/>
-        <xs:attribute ref="Width"/>
+		<xs:attribute ref="Width"/>
         <xs:attribute ref="StrideMultiple"/>
         <xs:attribute ref="WidthMultiple"/>
         <xs:attribute ref="Fill" use="required"/>
         <xs:attribute ref="ColorDepth" use="required"/>
+		<xs:attribute name="Area" type="xs:string"/>
         <xs:attribute name="Type" type="xs:string"/>
         <xs:attribute name="ItemWidth" type="xs:string"/>
       </xs:extension>
@@ -264,6 +266,13 @@
   <xs:element name="Set" type="Set_t" />
 
   <xs:element name="SetString" type="Set_t" />
+
+  <xs:element name="Header">
+    <xs:complexType>
+      <xs:attribute name="Version" use="required"/>
+      <xs:attribute name="Signature" use="required"/>
+    </xs:complexType>
+  </xs:element>
 
   <xs:element name="Font">
     <xs:complexType>
