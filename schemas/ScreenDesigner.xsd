@@ -5,7 +5,6 @@
   <xs:attribute name="Name" type="xs:string"/>
   <xs:attribute name="RefName" type="xs:string"/>
   <xs:attribute name="Fill" type="xs:string"/>
-  <xs:attribute name="Location" type="xs:string"/>
   <xs:attribute name="Height" type="xs:string"/>
   <xs:attribute name="Width" type="xs:string"/>
   <xs:attribute name="RowHeight" type="xs:string"/>
@@ -24,13 +23,13 @@
     <xs:attribute ref="Name"/>
     <xs:attribute ref="Top" />
     <xs:attribute ref="Left" />
-    <xs:attribute ref="Location" />
   </xs:attributeGroup>
 
   <xs:attributeGroup name="AreaGroup">
     <xs:attribute name="Area" type="xs:string"/>
     <xs:attribute name="Group" type="xs:string"/>
     <xs:attribute name="HotSpot" type="xs:string" />
+    <xs:attribute name="Location" type="xs:string"/>
   </xs:attributeGroup>
 
   <xs:attributeGroup name="FontGroup">
@@ -104,21 +103,32 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="TextAlignments">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Left" />
+      <xs:enumeration value="Right" />
+	  <xs:enumeration value="Center" />
+	  <xs:enumeration value="Justify" />
+	</xs:restriction>
+  </xs:simpleType>
+
   <!-- definition of complex elements -->
   <xs:complexType name="TopContent_t">
     <xs:choice maxOccurs="unbounded">
       <xs:element ref="Grid" minOccurs="0" maxOccurs="unbounded" />
       <xs:element ref="Rectangle" minOccurs="0" maxOccurs="unbounded" />
       <xs:element ref="Ellipse" minOccurs="0" maxOccurs="unbounded" />
-      <xs:element ref="Line" minOccurs="0" maxOccurs="unbounded" />
-      <xs:element ref="TextBlock" minOccurs="0" maxOccurs="unbounded" />
+	  <xs:element ref="Arc" minOccurs="0" maxOccurs="unbounded" />
+	  <xs:element ref="Line" minOccurs="0" maxOccurs="unbounded" />
+	  <xs:element ref="TextBlock" minOccurs="0" maxOccurs="unbounded" />
       <xs:element ref="Image" minOccurs="0" maxOccurs="unbounded" />
       <xs:element ref="Set" minOccurs="0" maxOccurs="unbounded" />
       <xs:element ref="SetString" minOccurs="0" maxOccurs="unbounded" />
       <xs:element ref="Font" minOccurs="0" maxOccurs="unbounded" />
       <xs:element ref="Color" minOccurs="0" maxOccurs="unbounded" />
-      <xs:element ref="Ref" minOccurs="0" maxOccurs="unbounded" />
-    </xs:choice>
+	  <xs:element ref="Ref" minOccurs="0" maxOccurs="unbounded" />
+	  <xs:element ref="Repeat" minOccurs="0" maxOccurs="unbounded" />
+	</xs:choice>
   </xs:complexType>
 
   <xs:element name="Project">
@@ -211,6 +221,23 @@
 
   <xs:element name="Ellipse" type="Ellipse_t" />
 
+  <xs:complexType name="Arc_t">
+    <xs:complexContent>
+      <xs:extension base="Content_t">
+        <xs:attributeGroup ref="AreaGroup" />
+        <xs:attribute name="StartAngle" type="xs:string" use="required" />
+        <xs:attribute name="EndAngle" type="xs:string" use="required" />
+		<xs:attribute name="Radius" type="xs:string" use="required" />
+		<xs:attribute name="FillDepth" type="xs:string" />
+		<xs:attribute ref="StrokeThickness" />
+        <xs:attribute ref="Stroke" />
+        <xs:attribute ref="Fill" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="Arc" type="Arc_t" />
+
   <xs:complexType name="Line_t">
     <xs:complexContent>
       <xs:extension base="Content_t">
@@ -240,6 +267,7 @@
           <xs:attribute name="Text" type="xs:string" />
           <xs:attribute name="Background" type="xs:string" />
           <xs:attribute name="Foreground" type="xs:string" />
+          <xs:attribute name="TextAlignment" type="TextAlignments" />
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>
@@ -329,6 +357,17 @@
       <xs:attributeGroup ref="Element" />
       <xs:attribute ref="RefName" use="required"/>
     </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Repeat">
+    <xs:complexType>
+      <xs:complexContent>
+	    <xs:extension base="Content_t">
+	      <xs:attribute name="Count" />
+	      <xs:attribute name="Predicate" />
+	    </xs:extension>
+      </xs:complexContent>
+	</xs:complexType>
   </xs:element>
   
 </xs:schema>
